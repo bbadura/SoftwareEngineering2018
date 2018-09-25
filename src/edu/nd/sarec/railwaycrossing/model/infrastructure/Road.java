@@ -22,10 +22,12 @@ public class Road {
 	Collection<CrossingGate> gates;
 	boolean clearEnds = false;
 	int roadSize;
+	TJunction junctions;
+	
 	
 	public Road(){}
 	
-	public Road(Point start, Point end, Direction direction, boolean buildCarFactory, boolean clearEnds){
+	public Road(Point start, Point end, Direction direction, boolean buildCarFactory, boolean clearEnds, TJunction junctions){
 		startX = start.x;
 		startY = start.y;
 		endX = end.x;
@@ -35,6 +37,7 @@ public class Road {
 		this.direction = direction;
 		gates = new Vector<CrossingGate>();
 		this.clearEnds = clearEnds;
+		this.junctions = junctions;
 		
 	}
 	
@@ -44,12 +47,12 @@ public class Road {
 	public void assignGate(CrossingGate gate){
 		gates.add(gate);
 		if (carFactory != null)
-			carFactory = new CarFactory(direction, new Point(startX-roadSize/2,startY), gates);  // allows additional gates.  Needs fixing
+			carFactory = new CarFactory(direction, new Point(startX-roadSize/2,startY), gates, junctions);  // allows additional gates.  Needs fixing
 	}
 	
 	public void addCarFactory(){
 		if (carFactory == null) // We only allow one
-			carFactory = new CarFactory(direction, new Point(startX-roadSize/2,startY), gates);
+			carFactory = new CarFactory(direction, new Point(startX-roadSize/2,startY), gates, junctions);
 	}
 	
 	public CarFactory getCarFactory(){

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import edu.nd.sarec.railwaycrossing.model.infrastructure.Direction;
+import edu.nd.sarec.railwaycrossing.model.infrastructure.TJunction;
 import edu.nd.sarec.railwaycrossing.model.infrastructure.gate.CrossingGate;
 
 
@@ -19,21 +20,22 @@ public class CarFactory {
 	private Car previousCar = null;
 	private ArrayList<Car> cars = new ArrayList<Car>();
 	Direction direction;
-	Point location;
-	
+	Point location;	
+	TJunction junctions;	
 	public CarFactory(){}
-	
-	public CarFactory(Direction direction, Point location, Collection<CrossingGate> gates){
+		
+	public CarFactory(Direction direction, Point location, Collection<CrossingGate> gates, TJunction junctions){
 		this.direction = direction;
 		this.location = location;
 		this.gates = gates;
+		this.junctions = junctions;
 	}
 	
 	
 	// Most code here is to create random speeds
 	public Car buildCar(){
 		if (previousCar == null || location.y < previousCar.getVehicleY()-100){
-			Car car = new Car(location.x,location.y);	
+			Car car = new Car(location.x,location.y, junctions);	
 			double speedVariable = (Math.random() * 10)/10;
 			car.setSpeed((2-speedVariable)*1.5); 
 			
@@ -45,11 +47,20 @@ public class CarFactory {
 			}
 			
 			// Each car must observe the car infront of it so it doesn't collide with it.
-			if (previousCar != null)
+			if (previousCar != null) {
 				previousCar.addObserver(car);
+				car.setInFront(previousCar);
+				previousCar.setBehind(car);
+			}
+
 			previousCar = car;
 			
 			cars.add(car);
+			if (location.x == 400) {
+				junctions.insertWestHigh(car);
+			}
+			else if (location.x == 800)
+				junctions.insertEastHigh(car);
 			return car;
 		} else 
 			return null;
@@ -71,5 +82,9 @@ public class CarFactory {
 		for (Car car: toDelete)
 			cars.remove(car);
 		return toDelete;
+	}
+	
+	public ArrayList<Car> getCars() {
+		return cars;
 	}
 }

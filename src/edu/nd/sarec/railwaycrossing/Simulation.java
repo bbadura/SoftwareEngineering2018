@@ -3,6 +3,7 @@ package edu.nd.sarec.railwaycrossing;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import edu.nd.sarec.railwaycrossing.model.infrastructure.Direction;
 import edu.nd.sarec.railwaycrossing.model.infrastructure.MapBuilder;
 import edu.nd.sarec.railwaycrossing.model.infrastructure.RailwayTracks;
 import edu.nd.sarec.railwaycrossing.model.infrastructure.Road;
@@ -40,13 +41,19 @@ public class Simulation extends Application{
 		stage.setScene(scene);
 		stage.show();
 				
-		// Train
+		// Trains
 		RailwayTracks track = mapBuilder.getTrack("Royal");
-		Train train = new Train(track.getEndX()+100,track.getEndY()-25);
+		RailwayTracks track2 = mapBuilder.getTrack("Continental");
+		Train train = new Train(track.getEndX()+100,track.getEndY()-20, Direction.WEST, "images/train_1.png");
 		root.getChildren().add(train.getImageView());
+		Train train2 = new Train(track2.getStartX()-200,track2.getEndY()-20, Direction.EAST, "images/train_2.png");
+		root.getChildren().add(train2.getImageView());
 		
-		for(CrossingGate gate: mapBuilder.getAllGates())
+		
+		for(CrossingGate gate: mapBuilder.getAllGates()) {
 			train.addObserver(gate);
+			train2.addObserver(gate);
+		}
 				
 		// Sets up a repetitive loop i.e., in handle that runs the actual simulation
 		new AnimationTimer(){
@@ -56,12 +63,16 @@ public class Simulation extends Application{
 			
 				createCar();
 				train.move();
+				train2.move();
 				
 				for(CrossingGate gate: mapBuilder.getAllGates())
 					gate.operateGate();
 				
 				if (train.offScreen())
 					train.reset();
+				
+				if (train2.offScreen())
+					train2.reset();
 						
 				clearCars();				
 			}

@@ -3,6 +3,7 @@ package edu.nd.sarec.railwaycrossing.model.vehicles;
 import java.util.Observable;
 import java.util.Observer;
 
+import edu.nd.sarec.railwaycrossing.model.infrastructure.TJunction;
 import edu.nd.sarec.railwaycrossing.model.infrastructure.gate.CrossingGate;
 import edu.nd.sarec.railwaycrossing.view.CarImageSelector;
 import javafx.scene.Node;
@@ -19,17 +20,25 @@ public class Car extends Observable implements IVehicle, Observer{
 	private double currentY = 0;
 	private double originalY = 0;
 	private boolean gateDown = false;
-	private double leadCarY = -1;  // Current Y position of car directly infront of this one
+	double leadCarY = -1;  // Current Y position of car directly infront of this one
+	private double leadCarX = -1;
+	private Car inFront = null;
+	private Car behind = null;
 	private double speed = 0.5;
+	private int turnRand = (int)(Math.random() * 10);
+	private boolean eastWest = false;
+	private TJunction junctions;
+	private boolean transfered = false;
 		
 	/**
 	 * Constructor
 	 * @param x initial x coordinate of car
 	 * @param y initial y coordinate of car
 	 */
-	public Car(int x, int y){
+	public Car(int x, int y, TJunction junctions){
 		this.currentX = x;
 		this.currentY = y;
+		this.junctions = junctions;
 		originalY = y;
 		ivCar = new ImageView(CarImageSelector.getImage());
 		ivCar.setX(getVehicleX());
@@ -55,20 +64,49 @@ public class Car extends Observable implements IVehicle, Observer{
 	public void move(){
 		boolean canMove = true; 
 		
-		// First case.  Car is at the front of the stopping line.
-		if (gateDown && getVehicleY() < 430 && getVehicleY()> 390)
-			canMove = false;
-		
-		// Second case. Car is too close too other car.
-		if (leadCarY != -1  && getDistanceToLeadCar() < 50)
-			canMove = false;
-		
-		if (canMove){
-			currentY+=speed;
-			ivCar.setY(currentY);
-			setChanged();
-			notifyObservers();
+		if (!eastWest) {
+			// First case.  Car is at the front of the stopping line.
+			if (gateDown && getVehicleY() < 430 && getVehicleY()> 390) {
+				canMove = false;
+			}
+			
+			// Second case. Car is too close too other car.
+			if (leadCarY != -1  && getDistanceToLeadCar() < 50) {
+				canMove = false;
+			}
+			
+			if ((currentY > 685 && currentY < 715) && currentX == 391) {
+				if (canMove && turnRand <= 2) {
+					currentY = 691;
+					currentX+=speed;
+					ivCar.setX(currentX);
+					eastWest = true;
+					junctions.insertEastWest(this);
+					this.deleteObserver(this.behind);
+					this.inFront.deleteObserver(this);
+					this.inFront.addObserver(this.behind);
+				}
+
+			}
+			
+			if (canMove){
+				currentY+=speed;
+				ivCar.setY(currentY);
+			}
 		}
+		else if (eastWest) {
+			if (currentX < 750 && leadCarX == -1) {
+				currentX+=speed;
+				ivCar.setX(currentX);
+			}
+			else if (currentX < 750 && getDistanceToLeadCar() > 50) {
+				currentX+=speed;
+				ivCar.setX(currentX);
+			}
+
+		}
+		setChanged();
+		notifyObservers();
 	}
 	
 	public void setSpeed(double speed){
@@ -91,11 +129,22 @@ public class Car extends Observable implements IVehicle, Observer{
 	}
 	
 	public double getDistanceToLeadCar(){
-		return Math.abs(leadCarY-getVehicleY());
+		if (!eastWest)
+			return Math.abs(leadCarY-getVehicleY());
+		else
+			return Math.abs(leadCarX-getVehicleX());
 	}
 	
 	public void removeLeadCar(){
 		leadCarY = -1;
+	}
+	
+	public void setInFront(Car newFront) {
+		this.inFront = newFront;
+	}
+	
+	public void setBehind(Car newBehind) {
+		this.behind = newBehind;
 	}
 
 	@Override
@@ -104,6 +153,9 @@ public class Car extends Observable implements IVehicle, Observer{
 			leadCarY = (((Car)o).getVehicleY());
 			if (leadCarY > 1020)
 				leadCarY = -1;
+			if (eastWest) {
+				leadCarX = (((Car)o).getVehicleX());
+			}
 		}
 			
 		if (o instanceof CrossingGate){
@@ -113,6 +165,6 @@ public class Car extends Observable implements IVehicle, Observer{
 			else
 				gateDown = false;
 					
-		}				
+		}
 	}	
 }
