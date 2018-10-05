@@ -1,8 +1,10 @@
 package edu.nd.se2018.homework.hwk6.ChipsChallenge;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import edu.nd.se2018.homework.hwk6.ChipsChallenge.Level.ChipsBoard;
 import edu.nd.se2018.homework.hwk6.ChipsChallenge.Level.Level1;
+import edu.nd.se2018.homework.hwk6.ChipsChallenge.Level.Level2;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -31,18 +33,16 @@ public class GameRunner extends Application {
 		chipStage.setScene(scene);
 		
 		board.drawBoard(root.getChildren());
-		board.addWalls(root.getChildren());
-		
 		man = new Man(board,root.getChildren());
-		
+		board.buildElements(root.getChildren());		
 		chipStage.show();
 		
 		
-		this.play();
+		this.play(chipStage);
 	}
 	
 	
-	private void play() {
+	private void play(Stage chipStage) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
 			@Override
 			public void handle(KeyEvent ke) { 
@@ -59,10 +59,23 @@ public class GameRunner extends Application {
 					case DOWN:
 						man.goSouth();
 						break;
+					case ESCAPE:
+						chipStage.close();
+						break;
+					case ENTER:
+						chipStage.close();
+						board = new Level2();
+						Platform.runLater( () -> {
+							try {
+								new GameRunner().start( new Stage() );
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						} );
+						break;
 					default:
 						break;
-				} 
-				
+				}
 			}
 		});
 	}

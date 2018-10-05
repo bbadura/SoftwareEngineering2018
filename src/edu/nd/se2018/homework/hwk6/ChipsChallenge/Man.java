@@ -2,12 +2,14 @@ package edu.nd.se2018.homework.hwk6.ChipsChallenge;
 
 import edu.nd.se2018.homework.hwk6.ChipsChallenge.Level.ChipsBoard;
 import java.awt.Point;
+import java.util.Observable;
+
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class Man{
+public class Man extends Observable{
 	Point currentLocation;
 	ChipsBoard board;
 	ImageView ManView = new ImageView();
@@ -24,9 +26,10 @@ public class Man{
 		ManView.setX(currentLocation.x * scale);
 		ManView.setY(currentLocation.y * scale);
 		root.add(ManView);
+		this.board.addMan(this);
 	}
 	
-	public Point getShipLocation() {
+	public Point getManLocation() {
 		return currentLocation;
 	}
 
@@ -39,6 +42,8 @@ public class Man{
 				currentLocation.x++;
 				ManView.setX(currentLocation.x * scale);
 				ManView.setY(currentLocation.y * scale);
+				setChanged();
+				notifyObservers();
 			}
 		}
 	}
@@ -52,6 +57,8 @@ public class Man{
 				currentLocation.x--;
 				ManView.setX(currentLocation.x * scale);
 				ManView.setY(currentLocation.y * scale);
+				setChanged();
+				notifyObservers();
 			}
 		}
 	}
@@ -65,6 +72,8 @@ public class Man{
 				currentLocation.y++;
 				ManView.setX(currentLocation.x * scale);
 				ManView.setY(currentLocation.y * scale);
+				setChanged();
+				notifyObservers();
 			}
 		}
 	}
@@ -78,6 +87,8 @@ public class Man{
 				currentLocation.y--;
 				ManView.setX(currentLocation.x * scale);
 				ManView.setY(currentLocation.y * scale);
+				setChanged();
+				notifyObservers();
 			}
 		}
 	}
