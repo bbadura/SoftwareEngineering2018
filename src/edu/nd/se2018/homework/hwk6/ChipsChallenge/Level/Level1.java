@@ -16,6 +16,8 @@ public class Level1 extends ChipsBoard {
 	@Override
 	public void buildElements(ObservableList<Node> root) {
 		
+		System.out.println("building level 1");
+		
 		// Build Walls
 		Wall wall = new Wall(this, root);
 		wall.buildStraightWall(0, 9, 9, 9);

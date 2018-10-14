@@ -14,14 +14,14 @@ import javafx.stage.Stage;
 
 public class GameRunner extends Application {
 
-	final private int cellSize = 25;  
+	final private int cellSize = 25;
 	final private int mapSize = 25;
 	int scale = 25;
 	Scene scene;
    
 	// Globals
     Pane root;
-    ChipsBoard board = new Level1();
+    ChipsBoard board = new Level2();
     Man man;
     
 	@Override
@@ -64,7 +64,7 @@ public class GameRunner extends Application {
 						break;
 					case ENTER:
 						chipStage.close();
-						board = new Level2();
+						board = new Level1();
 						Platform.runLater( () -> {
 							try {
 								new GameRunner().start( new Stage() );
