@@ -41,6 +41,10 @@ public class Portal implements Observer{
 		reached = true;
 		this.root.remove(portalView);
 	}
+	
+	public Point getPortalLocation() {
+		return portalLocation;
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {
