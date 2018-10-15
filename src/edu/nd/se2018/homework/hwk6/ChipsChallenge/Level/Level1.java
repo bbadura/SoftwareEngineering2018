@@ -10,7 +10,7 @@ import edu.nd.se2018.homework.hwk6.ChipsChallenge.Wall;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
-public class Level1 extends ChipsBoard {
+public class Level1 extends ChipBoard {
 	Portal portal;
 
 	@Override

@@ -24,6 +24,7 @@ public class GameRunner extends Application {
     Portal portal;
     TextBox text;
     int level = 1;
+    Text title = new Text();;
     
 	@Override
 	public void start(Stage chipStage) throws Exception {
@@ -39,11 +40,10 @@ public class GameRunner extends Application {
 		text = new TextBox(board,root.getChildren());
 		text.writeText();
 		
-		Text t = new Text();
-		t.setText("Chips Challenge Level " + level);
-		t.setX(25.3*scale);
-		t.setY(1*scale);
-		root.getChildren().add(t);
+		title.setText("Chips Challenge Level " + level);
+		title.setX(25.3*scale);
+		title.setY(1*scale);
+		root.getChildren().add(title);
 		
 		chipStage.show();
 		

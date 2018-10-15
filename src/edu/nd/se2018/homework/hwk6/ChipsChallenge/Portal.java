@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Portal implements Observer{
+	public static Portal instance = new Portal();
 	Point portalLocation = new Point(0,0);;
 	ChipsBoard board;
 	Image portalImage;
@@ -20,6 +21,10 @@ public class Portal implements Observer{
 	boolean reached = false;
 	
 	int scale = 25;
+	
+	private Portal() {
+		
+	}
 	
 	public Portal(ChipsBoard board, ObservableList<Node> root) {
 		this.board = board;

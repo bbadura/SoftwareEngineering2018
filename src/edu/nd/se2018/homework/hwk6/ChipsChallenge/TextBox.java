@@ -1,14 +1,11 @@
 package edu.nd.se2018.homework.hwk6.ChipsChallenge;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import edu.nd.se2018.homework.hwk6.ChipsChallenge.Level.ChipsBoard;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
 
-public class TextBox implements Observer {
+public class TextBox {
 	ChipsBoard board;
 	ObservableList<Node> root;
 	int scale = 25;
@@ -85,11 +82,5 @@ public class TextBox implements Observer {
 		yka = board.getKeyStatus("yellow");
 		gka = board.getKeyStatus("green");
 		chipCnt = board.getChipCnt();
-	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
 	}
 }
